@@ -1,0 +1,239 @@
+# $Id: //hw/nv/env/.aliases#28 $
+
+##echo "trace_a00"
+
+#setup env if this is being sourced from someone else's shell
+if [ -z "$HNAME" ]; then
+    export HNAME=`hostname`
+fi
+if [ -z "$SEP" ]; then
+    export SEP=":"
+fi
+
+## echo "trace_a10"
+
+# ABBREVIATIONS
+alias a=alias
+alias c=clear
+alias g=grep
+alias h=history
+
+alias dir="ls -l"
+alias hg="h | g \!*"
+alias po=popd
+alias pu=pushd
+alias resource="source=~/.cshrc; source ~/.login"
+alias so=source
+# Full path of a file
+alias fp="readlink -f"
+
+alias gv=ghostview
+
+ # FORCE SPECIFIC PATHS AND ARGUMENTS
+alias gcc=cc
+alias gdb=/home/gnu/gdb_latest/bin/gdb
+alias lp="lp -w"
+alias pushd='pushd \!*; cd .'
+alias popd='popd \!*; cd .'
+alias lpr='lpr -h'	# skip header page on print jobs
+alias v=vim
+alias t='tmux -u'
+alias m='mosh --server="/home/utils/mosh-1.2.5/bin/mosh-server new -l LANG=en_US.UTF-8"'
+#alias tmux=/home/utils/tmux/bin/tmux
+#alias vim=/home/utils/vim-7.4/bin/vim
+#alias -g git=/home/utils/git-2.3.6/bin/git
+#alias -g pip=/home/utils/pip-1.1/bin/pip
+
+if [[ $OSTYPE == "Win32" ]]; then
+  if [[ $OSTYPE_RAW == "CYGWIN_NT-5.1" ]]; then
+    alias explorer='IEXPLORE `cygpath -w -a \!*`'
+    alias excel=EXCEL
+    alias visio=VISIO
+    alias word=winword
+    alias powerpoint=powerpnt
+  elif [[ $OSTYPE_RAW == "CYGWIN_NT-6.1-WOW64" ]]; then
+    alias explorer='iexplore `cygpath -w -a \!*`'
+    alias excel=EXCEL
+    alias visio=VISIO
+    alias word=WINWORD
+    alias powerpoint=POWERPNT
+  else
+    alias explorer='iexplore `cygpath -w -a \!*`'
+    alias word=winword
+    alias powerpoint=powerpnt
+  fi
+  alias project=winproj
+  alias explore=explorer
+  alias asperl=$cdrive/Perl/bin/perl  # path to ActiveState perl
+fi
+
+
+alias man='man -a'
+
+if [ ! -z "$P4PASSWD" ]; then
+  echo "WARNING: The P4PASSWD environment variable is not to be used anymore because its value can be seen by anyone. Instead use "p4 login -a" to get a ticket."
+fi
+
+if [[ $OSTYPE == "Win32" ]]; then
+  # this is a weird one:
+  #   alias p4='p4 -d `cygpath -w $PWD`'
+  # doesn't actually work for some reason when you invoke p4 with wildcards - 
+  # the \ in the cygpath output gets zapped.  You can try to fix this by:
+  #   alias p4='p4 -d `cygpath -w $PWD | sed s/\\\\/\\\\\\\\/g`'
+  # to escape the backslash.  this works for the case of invoking p4 with a 
+  # wildcard ... but now for some reason the P4PASSWD env var doesn't always 
+  # take under cygwin, so pass it in on the command line as well.
+
+  # Enclose the PWD and FPATH strings in quotes to deal with the case of a directory with a space
+
+  if [ ! -z "$P4PASSWD" ]; then
+    alias p4='export FPATH=`cygpath -w "$PWD"` ; \p4 -P $P4PASSWD -d="$FPATH"'
+  else
+    alias p4='export FPATH=`cygpath -w "$PWD"` ; \p4 -d="$FPATH"'
+  fi
+else
+  alias p4	'p4 -d `/bin/pwd`'
+  alias p4merge=$P4MERGE
+fi
+alias p4_diff	'p4_xdiff -d'
+alias p4clhave='p4 changes -m 1 `depth`/...#have'
+alias p4_filelog="p4 filelog -l \!* | more"
+alias p4_log=p4_filelog
+
+alias checkbuild="egrep -i '(\*\*|error)' \!* | grep -v ignore"
+alias nv='cd $NV'
+alias igrep='grep -i'
+
+
+alias lc='ls --color'
+
+alias email='ypcat passwd | egrep -i \(\!*\)'
+
+alias ud="unexport DISPLAY"
+
+alias view="vim -R"
+
+alias errgrep='grep Error \!* | egrep -v "msg =|Test-Compiler"|more'
+
+alias lvcs='show_users -Q vcs'
+alias vf='verifilter -f verifilter.cmd -y .'
+
+alias bv='bsub -q vcs'
+
+alias dos2unix="perl -pi -e 's/\cM//g;'"
+alias unix2dos="perl -pi -e 's/\n/\cM\n/m;'"
+
+##echo "trace_a30"
+
+alias gt=gnome-terminal --background=transparent --foreground=wheat --font=9x15
+alias bkillq="bkill \`bjobs -q  '\!*' \| grep nsampath \| awk \''{print $1;}'\'\`"
+alias everest='cd /home/lab/systems/knobby/everest/nv35'
+alias loco='cd /home/lab/systems/knobby/loco/nv35'
+alias axis='cd /home/lab/systems/knobby/axis/nv35'
+alias axis5='cd /home/lab/systems/knobby/axis5/nv35'
+alias ikos='cd /home/ikos6/nv35'
+alias gvldoc="acroread /home/ikos2/VStation_v5.0.2/doc/VirtuaLogic_5.0_UG.pdf"
+alias winvnc=vncviewer 172.16.155.17
+alias lprn=enscript -2 --pretty-print --borders --landscape -DDuplex:true
+
+alias mb=/home/nv/bin/my_backup
+
+alias ac=autocutsel -selection PRIMARY -cutbuffer 0
+alias qmgt="qsub -q \!* multi-gnome-terminal"
+alias qlc="qsub -q l_pri_cpu_.9G \!*"
+alias qlch="qsub -q l_pri_cpu_2G \!*"
+alias qlv="qsub -q l_pri_vcs_.9G \!*"
+alias qlvh="qsub -q l_pri_vcs_2G \!*"
+alias qli="qsub -q l_pri_interactive \!*"
+alias qlih="qsub -R 2G -q l_pri_interactive \!*"
+alias qloh="qsub -q o_pri_interactive_cpu_2G \!*"
+alias tarnew="/home/utils/tar-1.26/bin/tar \!*"
+
+alias /='`depth`/bin/libwrap'
+alias wb=rsh l-xterm-29 -e "gnome-terminal --display=$DISPLAY"
+
+alias rl='rlogin `/home/nsampath/bin/llh`'
+alias tl='telnet -l nsampath `/home/nsampath/bin/llh`'
+alias sd91="export DISPLAY=o-xterm-91:91"
+alias sd92="export DISPLAY=o-xterm-92:91"
+
+# run in diag/tests/<chip>
+alias fcverdi='qsub -q o_cpu_32G verdi -ssv -ssy -2001 -nologo -f sys.vc'
+# run in fermi unit sim
+alias feverdi="qsub -q l_cpu_2G /home/tools/debussy/verdi_200801/bin/verdi -ssv -ssy -nologo \!*"
+
+alias jasper_doc='acroread /home/tools/tempusquest/jasper_2011.08p003/doc/jaspergold_jaspercore_command_reference_manual.pdf'
+
+alias cdpwd='cd `pwd`'
+alias nvmk108d="nvmk PROJECTS=gm108_debug \!*"
+alias nvmk107d="nvmk PROJECTS=gm107_debug \!*"
+alias nvmk104d="nvmk PROJECTS=gm104_debug \!*"
+alias nvmk20cd="nvmk PROJECTS=gm20c_debug \!*"
+alias p4tkdiff="(export P4DIFF=tkdiff; p4diff \!*; export P4DIFF=diff)"
+alias p4rbundle="p4 revert ...; as2 retrieve -f \!*; p4 diff ..."
+alias bs="Sandbox/testgen/bin/batch_status \!*"
+alias glivd="/home/scratch.nsampath_maxwell/nvgpu_tree1/hw/tools/imgtools/bin/glivd \!*"
+alias fn="find . -name \!*"
+alias bpd="nvrun t_make -build mods -fetchMods -build fmod -build stand_sim_ds -build stand_sim_pd -build stand_sim_scc -keepgoing \!*"
+alias v20ad="qsub -q o_cpu_2G nvmk PROJECTS=gk20a_debug -c. verdi"
+alias v208d="qsub -q o_cpu_2G nvmk PROJECTS=gk208_debug -c. verdi"
+alias v108d="qsub -q o_cpu_2G nvmk PROJECTS=gm108_debug -c. verdi"
+alias v107d="qsub -q o_cpu_2G nvmk PROJECTS=gm107_debug -c. verdi"
+
+alias cdresults='cd `depth`/diag/testgen/results'
+alias cdtestgen='cd `depth`/diag/testgen'
+alias cdtot='cd `depth`/diag/testgen'
+
+# Master tree
+alias g84m='cd /home/scratch.g84_master/g84/g84' 
+alias g86m='cd /home/scratch.g86_master/g86/g86' 
+alias g92m='cd /home/scratch.g92_master/g92/g92' 
+alias g94m='cd /home/scratch.g94_master/g94/g94' 
+alias g98m='cd /home/scratch.g98_master/g98/g98' 
+alias gt200m='cd /home/scratch.gt200_master/hw/gt200' 
+alias gt215m='cd /home/scratch.gt215_master/gt215/gt215' 
+alias gt216m='cd /home/scratch.gt216_master/gt216/gt216' 
+alias gt218m='cd /home/scratch.gt218_master/gt218/gt218' 
+
+alias gf100m='cd /home/scratch.gf100_master/gf100/gf100' 
+alias gf104m='cd /home/scratch.gf104_master/gf104/gf104' 
+alias gf106m='cd /home/scratch.gf106_master/gf106/gf106' 
+alias gf108m='cd /home/scratch.gf108_master/gf108/gf108' 
+alias gf117m='cd /home/scratch.gf117_master/gf117/gf11x' 
+
+alias gk107m='cd /home/scratch.gk107_master/gk107/kepler1_gklit1'
+alias gk104m='cd /home/scratch.gk104_master/gk104/kepler1_gk104'
+alias gk110m='cd /home/scratch.gk110_master/gk110/kepler1_gk110_0/'
+alias gk208m='cd /home/scratch.gk208_master/gk208/kepler1_gklit4/'
+alias gk20am='cd /home/scratch.t124_master/t124/gklit3/'
+alias t124m='cd /home/scratch.t124_master/t124/'
+
+alias gm108m='cd /home/scratch.gm108_master/gm108/nvgpu_gmlit1'
+alias gm107m='cd /home/scratch.gm107_master/gm107/gm107'
+alias gm204m='cd /home/scratch.gm204_master/gm204/gm204'
+
+alias gp100m='cd /home/scratch.gp100_master/gp100/gp100'
+alias gp102m='cd /home/scratch.gp102_master/gp102/gp102'
+alias gp104m='cd /home/scratch.gp104_master/gp104/gp104'
+alias gp106m='cd /home/scratch.gp106_master/gp106/gp106'
+alias gp107m='cd /home/scratch.gp107_master/gp107/gp107'
+alias gp108m='cd /home/scratch.gp108_master/gp108/gp108'
+
+
+alias gv100='cd "C:\Users\nsampath\NSAMPATH-LT\NSAMPATH-LT\hw\doc\gpu\volta\volta\floorplan\studies\gv100"'
+alias sc='cd "C:\Users\nsampath\NSAMPATH-LT\NSAMPATH-LT\hw\doc\gpu\volta\volta\floorplan\scripts"'
+
+# LSF
+alias queues='/home/nv/bin/list_queues -o direct -o machines -o mem_reserved -o mem_limit -o cpu_limit -o run_limit -o real_queue -o res_select \!*'
+
+alias reboot_forge='cd /home/maxwell_bringup/scripts/power && tclsh apc_control.tcl -reboot forge\!*'
+
+# Perforce project trees
+alias nvgpu1='export P4TREE="[nvgpu1]"; cd /home/scratch.nsampath/nvgpu_tree1/hw/nvgpu'
+alias nvgpu2='export P4TREE="[nvgpu2]"; cd /home/scratch.nsampath/nvgpu_tree2/hw/nvgpu'
+alias gmlit4='export P4TREE="[gmlit4]"; cd /home/scratch.nsampath/nvgpu_gmlit4_tree1/hw/nvgpu_gmlit4'
+alias gplit1='export P4TREE="[gplit1]"; cd /home/scratch.nsampath/nvgpu_gplit1_tree1/hw/nvgpu_gplit1'
+alias gplit3='export P4TREE="[gplit3]"; cd /home/scratch.nsampath/nvgpu_gplit3_tree1/hw/nvgpu_gplit3'
+alias mm='export P4TREE="[quasar]"; cd /home/scratch.nsampath_maxwell/quasar'
+alias ax='export P4TREE="[axlite]"; cd /home/scratch.nsampath_maxwell/quasar/dev/inf/axrules/1.0/nvgpu'
+alias stmp='cd /home/scratch.nsampath/tmp'
