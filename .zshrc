@@ -1,117 +1,123 @@
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
+# The following lines were added by compinstall
+zstyle :compinstall filename '/home/nsampath/.zshrc'
 
-ZSH_THEME="dougblack"
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+#
+# To stop echo the cmd actually run
+set +x
 
-alias zshc="vi ~/.zshrc"
-alias zshs="source ~/.zshrc"
-alias ohmyzsh="vi ~/.oh-my-zsh"
-alias gallois="vi ~/.oh-my-zsh/themes/gallois.zsh-theme"
-alias ll="ls -la"
-alias va=". venv/bin/activate"
-alias da="deactivate"
-alias psg="ps aux | grep"
-alias h="history"
-alias e="emacs"
-alias vi="vim"
+# Need to unset to make tmux work correct
+#LANG=utf-8
+unset LANG
+unset TMUX
 
-# Git
-alias gs="git status"
-alias gb="git branch"
-alias diff="git diff"
-alias log=". ~/.githelpers && pretty_git_log"
-alias gpom="git push origin master"
-alias glom="git pull origin master"
-alias gpob=". ~/.githelpers && push_branch"
-alias glob=". ~/.githelpers && pull_branch"
-alias files="find . -name "
-alias vp="vagrant provision"
-alias vr="vagrant reload"
-alias vu="vagrant up"
-alias vd="vagrant destroy"
-alias vs="vagrant ssh"
-alias staged="git diff --staged"
-alias master="git checkout master"
-alias :q="exit"
+# See http://linux.die.net/man/1/zshoptions
+setopt NO_BEEP
+setopt C_BASES
+#setopt PRINT_EIGHT_BIT
+#setopt SH_NULLCMD
+#setopt AUTO_CONTINUE
+#setopt PATH_DIRS
+#setopt NO_NOMATCH
+setopt EXTENDED_GLOB
+#disable -p '^'
+#setopt NOMATCH
+#setopt NOTIFY
 
-# Uncomment following line if you want to disable command autocorrection
-DISABLE_CORRECTION="true"
+#setopt NO_CORRECT
 
-# Uncomment following line if you want red dots to be displayed while waiting for completion
+# typing name of directory will cd to it
+setopt AUTOCD
+
+setopt ALWAYS_LAST_PROMPT
+setopt AUTO_LIST
+setopt AUTO_MENU
+
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt INC_APPEND_HISTORY
+setopt EXTENDED_HISTORY
+
+SAVEHIST=9000
+HISTSIZE=9000
+HISTFILE=~/.zsh_history
+
+# Directory Stack
+DIRSTACKSIZE=20
+# Make cd push the old directory onto the stack
+setopt AUTOPUSHD
+setopt PUSHDSILENT
+setopt PUSHDTOHOME
+
+# Remove duplicate entries
+setopt pushdignoredups
+
+# This reverts the +/- operators.
+setopt pushdminus
+
+# Uncomment the following line to enable command auto-correction.
+ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
 
-# Uncomment following line if you don't want greedy autocomplete
-setopt MENU_COMPLETE
+autoload -Uz compinit
+compinit
+#zstyle :compinstall filename '/home/nsampath/.zshrc'
+zmodload -i zsh/complist
+zstyle ':completion:*' menu select=2
 
-zstyle ':completion:*:*:vi:*:*files' ignored-patterns '*.egg' '*.egg-info'
+# Needed for tmux?
+export TERM=xterm-256color
 
-# Uncomment following line if you want to disable marking untracked files under
-# VCS as dirty. This makes repository status check for large repositories much,
-# much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets root)
-
-plugins=(git brew virtualenvwrapper zsh-syntax-highlighting)
-source $ZSH/oh-my-zsh.sh
-source /Users/dblack/.oh-my-zsh/custom/plugins/opp.zsh/opp.zsh
-source /usr/local/Cellar/autojump/21.6.9/etc/autojump.zsh
-
-# Vars
-export PATH=/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/heroku/bin:/Users/dblack/code/pytwilio.fab/venv/bin:/usr/local/sbin
-export REALM=dev
-export SVN_EDITOR=/usr/bin/vi
-export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUAL_ENV_DISABLE_PROMPT='1'
-
-source /usr/local/bin/virtualenvwrapper.sh
-
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
-alias ls="CLICOLOR_FORCE=1 ls -G"
-alias less="less -R"
-
-
-function virtualenv_info {
-    [ $VIRTUAL_ENV ] && echo '('`basename $VIRTUAL_ENV`') '
-}
-
-
-function zle-line-init zle-keymap-select {
-    VIM_PROMPT="%{$fg_bold[yellow]%} [% NORMAL]%  %{$reset_color%}"
-    RPS1="${${KEYMAP/(vicmd|opp)/$VIM_PROMPT}/(main|viins)/}"
-    zle reset-prompt
-}
-
-
-zle -N zle-line-init
-zle -N zle-keymap-select
-export KEYTIMEOUT=20
+# Vi bindings
 bindkey -v
 
-# Use jk for ESC
-bindkey -M viins 'jk' vi-cmd-mode
+# Alt-Enter to enter a newline in a multiline cmd
+bindkey '^[^M' self-insert-unmeta
 
-# Use vim cli mode
-bindkey '^P' up-history
-bindkey '^N' down-history
+# To open the cmd in an editor
+# The first line loads the function. The second line creates a new widget for the Z shell line editor (zle) from the function of the same name.
+# Doesn't work
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
 
-# backspace and ^h working even after returning from command mode
-bindkey '^?' backward-delete-char
-bindkey '^h' backward-delete-char
+# TOO SLOW!
+#autoload -Uz vcs_info
+##zstyle ':vcs_info:*' actionformats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
+#zstyle ':vcs_info:*' formats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%f '
+#zstyle ':vcs_info:(p4):*' branchformat '%b%F{1}'
+#zstyle ':vcs_info:*' disable-patterns "$HOME(|/*)"
+#precmd () { vcs_info }
+#
+#function precmd() {
+#    #this will update directory in terminal window
+#    #print -Pn "\e]2;%~\a"
+#    #if [[ $PWD =~ '\/home\/scratch.nsampath\/(\w*)/' ]]; then
+#    #    PROMPT_PREFIX="<$match[1]>:"
+#    #else
+#    #    PROMPT_PREFIX=""
+#    #fi
+#    #local p4client=`p4 info | grep 'Client name' | sed 's/.*name: //'`
+#    #PROMPT_PREFIX=$p4client
+#}
 
-# ctrl-w removed word backwards
-bindkey '^w' backward-kill-word
+setopt PROMPT_SUBST
+#PS1=' %F{yellow}${vcs_info_msg_0_}> %F{green}%~ %f%#'$'\n''> '
+PS1=$'\n''%F{red}<%F{green}%~%F{red}> %f'$'\n''%F{red}# %f '
+RPROMPT='%F{red}[%h]%f'
 
-# ctrl-r starts searching history backward
-bindkey '^r' history-incremental-search-backward
+# load Nvidia modules
+#source /home/utils/modules-tcl/init/`basename $SHELL`
+#module load vim
+#module load tmux
+#module load git
 
-setopt MENU_COMPLETE
+if [ -e ~/.aliases ]; then
+    source ~/.aliases
+fi
 
 
-export CR_CACHE_DIR=/usr/local/var/lib/config-renderer
-export CR_COMMANDS_ENDPOINT=/usr/local/var/run/config-renderer/commands.sock
-
-export SD_SNAPSHOT_ENDPOINT=/usr/local/var/run/service-discovery/snapshot.sock
-export SD_UPDATES_ENDPOINT=/usr/local/var/run/service-discovery/updates.sock
-export SD_CACHE_PATH=/usr/local/var/lib/service-discovery/services.json
